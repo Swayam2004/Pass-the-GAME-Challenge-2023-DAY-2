@@ -23,34 +23,34 @@ public class PlayerMovement : MonoBehaviour
         _animator = GetComponent<Animator>();    
     }
 
+    private void Start()
+    {
+        GameInput.Instance.OnJumpAction += GameInput_OnJumpAction;
+    }
+
+    private void GameInput_OnJumpAction(object sender, System.EventArgs e)
+    {
+        Jump();
+    }
+
     void Update()
     {
         MoveControls();
-        Jump();
         Attacking();
     }
 
     public void MoveControls()
     {
-        var movement = Input.GetAxis("Horizontal");
-        if (movement > 0 || movement < 0)
-        {
-            _animator.SetBool("isMoving", true);
-        }
-        else
-        {
-            _animator.SetBool("isMoving", false);
-        }
-        transform.position += new Vector3(movement, 0, 0) * _moveSpeed * Time.deltaTime;
+        Vector2 movement = GameInput.Instance.GetMovementNormalized();
+        
+        transform.position +=  (Vector3)movement * _moveSpeed * Time.deltaTime;
+
+        bool isMoving = !(movement.magnitude == 0);
+        _animator.SetBool("isMoving", isMoving);
     }
     public void Jump()
     {
         _isGrounded = Physics2D.OverlapCircle(_feetTransform.position, _checkRadius, _whatIsGround);
-
-        if (!Input.GetKeyDown(KeyCode.Space))
-        {
-            return;
-        }
 
         if (_isGrounded)
         {
