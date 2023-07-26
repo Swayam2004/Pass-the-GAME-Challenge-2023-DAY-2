@@ -4,30 +4,36 @@ using UnityEngine;
 
 public class FollowPlayer : MonoBehaviour
 {
-    public float minSpeed;
-    public float maxSpeed;
-    public float speed;
-    public Transform target;
-    public float maximumDistance;
-    public float minimumDistance;
+    [SerializeField] private Transform target;
+    [SerializeField] private float _minSpeed;
+    [SerializeField] private float _maxSpeed;
+    [SerializeField] private float _maximumDistance;
+    [SerializeField] private float _minimumDistance;
 
-    public Animator animator;
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     public void Update()
     {
-        if (Vector2.Distance(transform.position, target.position) < maximumDistance)
+        if (Vector2.Distance(transform.position, target.position) < _maximumDistance)
         {
-            transform.position = Vector2.MoveTowards(transform.position, target.position, minSpeed * Time.deltaTime);
-            animator.SetBool("isMoving", true);
+            transform.position = Vector2.MoveTowards(transform.position, target.position, _minSpeed * Time.deltaTime);
+            _animator.SetBool("isMoving", true);
         }
-        if (Vector2.Distance(transform.position, target.position) > maximumDistance)
+
+        if (Vector2.Distance(transform.position, target.position) > _maximumDistance)
         {
-            transform.position = Vector2.MoveTowards(transform.position, target.position, maxSpeed * Time.deltaTime);
-            animator.SetBool("isMoving", true);
+            transform.position = Vector2.MoveTowards(transform.position, target.position, _maxSpeed * Time.deltaTime);
+            _animator.SetBool("isMoving", true);
         }
-        if (Vector2.Distance(transform.position, target.position) < minimumDistance)
+
+        if (Vector2.Distance(transform.position, target.position) < _minimumDistance)
         {
-            animator.SetBool("isMoving", false);
+            _animator.SetBool("isMoving", false);
         }
     }
 }

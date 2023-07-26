@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float Speed;
-    public float JumpForce;
-    public Rigidbody2D rb;
-    public Transform feet;
-    public bool isGrounded;
-    public bool isJumping;
-    public LayerMask whatIsGround;
-    public float checkRadius;
-    public float jumpTime;
-    public float jumpTimeCounter;
+    [SerializeField] private Transform _feetTransform;
+    [SerializeField] private LayerMask _whatIsGround;
+    [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _jumpForce;
+    [SerializeField] private float _checkRadius;
+    [SerializeField] private float _noOfJumps;
 
-    public Animator animator;
+    private Rigidbody2D _rb;
+    private Animator _animator;
+    private bool _isGrounded;
+    private bool _isJumping;
+    private float _jumpTimeCounter;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();    
     }
 
-    // Update is called once per frame
     void Update()
     {
         MoveControls();
@@ -36,56 +35,58 @@ public class PlayerMovement : MonoBehaviour
         var movement = Input.GetAxis("Horizontal");
         if (movement > 0 || movement < 0)
         {
-            animator.SetBool("isMoving", true);
+            _animator.SetBool("isMoving", true);
         }
         else
         {
-            animator.SetBool("isMoving", false);
+            _animator.SetBool("isMoving", false);
         }
-        transform.position += new Vector3(movement, 0, 0) * Speed * Time.deltaTime;
+        transform.position += new Vector3(movement, 0, 0) * _moveSpeed * Time.deltaTime;
     }
     public void Jump()
     {
-        isGrounded = Physics2D.OverlapCircle(feet.position, checkRadius, whatIsGround);
+        _isGrounded = Physics2D.OverlapCircle(_feetTransform.position, _checkRadius, _whatIsGround);
 
         if (!Input.GetKeyDown(KeyCode.Space))
         {
             return;
         }
-        if (isGrounded)
+
+        if (_isGrounded)
         {
-            isJumping = true;
-            jumpTimeCounter = jumpTime;
-            rb.velocity = Vector2.up * JumpForce;
+            _isJumping = true;
+            _jumpTimeCounter = _noOfJumps;
+            _rb.velocity = Vector2.up * _jumpForce;
         }
-        if (isJumping)
+
+        if (_isJumping)
         {
-            if (jumpTimeCounter > 0)
+            if (_jumpTimeCounter > 0)
             {
-                rb.velocity = Vector2.up * JumpForce;
-                jumpTimeCounter -= Time.deltaTime;
+                _rb.velocity = Vector2.up * _jumpForce;
+                _jumpTimeCounter -= Time.deltaTime;
             }
             else
             {
-                isJumping = false;
+                _isJumping = false;
             }
         }
 
-        isJumping = false;
+        _isJumping = false;
     }
 
     public void Attacking()
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            animator.SetBool("isAttacking", true);
+            _animator.SetBool("isAttacking", true);
             Invoke("AttackingStop", 0.5f);
         }
     }
 
     public void AttackingStop()
     {
-        animator.SetBool("isAttacking", false);
+        _animator.SetBool("isAttacking", false);
     }
        
 }
