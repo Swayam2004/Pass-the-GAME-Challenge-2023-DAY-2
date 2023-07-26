@@ -2660,7 +2660,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5269241819482097088, guid: da9d8e94ee213f64cb2b84902641eeb6, type: 3}
   m_PrefabInstance: {fileID: 8655776672897842194}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1543142582
+--- !u!95 &1543142579
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -5480,7 +5480,7 @@ PrefabInstance:
     - target: {fileID: 4286751753325412119, guid: da9d8e94ee213f64cb2b84902641eeb6, type: 3}
       propertyPath: animator
       value: 
-      objectReference: {fileID: 1543142582}
+      objectReference: {fileID: 1543142579}
     - target: {fileID: 4446589882608577669, guid: da9d8e94ee213f64cb2b84902641eeb6, type: 3}
       propertyPath: m_SortingOrder
       value: 4
@@ -5535,5 +5535,5 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2874777876038029418, guid: da9d8e94ee213f64cb2b84902641eeb6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1543142582}
+      addedObject: {fileID: 1543142579}
   m_SourcePrefab: {fileID: 100100000, guid: da9d8e94ee213f64cb2b84902641eeb6, type: 3}
