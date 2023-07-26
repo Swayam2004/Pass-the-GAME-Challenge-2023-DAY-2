@@ -4,8 +4,33 @@ using UnityEngine;
 
 public class CameraPlayerFollow : MonoBehaviour
 {
-    [SerializeField] private Transform _target;
+    [SerializeField] private Transform _playerTransform;
+    [SerializeField] private Transform _ghostTransform;
     [SerializeField] private float _followSpeed = 5f;
+
+    private Transform _target;
+
+    private void Awake()
+    {
+        _target = _playerTransform;
+    }
+
+    private void Start()
+    {
+        GameInput.Instance.OnSwitchAction += GameInput_OnSwitchAction;
+    }
+
+    private void GameInput_OnSwitchAction(object sender, System.EventArgs e)
+    {
+        if(_target == _playerTransform)
+        {
+            _target = _ghostTransform;
+        }
+        else
+        {
+            _target = _playerTransform;
+        }
+    }
 
     void Update()
     {

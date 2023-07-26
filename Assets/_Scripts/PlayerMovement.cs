@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -20,12 +18,28 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _animator = GetComponent<Animator>();    
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
         GameInput.Instance.OnJumpAction += GameInput_OnJumpAction;
+        GameInput.Instance.OnSwitchAction += GameInput_OnSwitchAction;
+        GameInput.Instance.OnPlayerFireAction += GameInput_OnPlayerFireAction; ;
+    }
+
+    private void GameInput_OnPlayerFireAction(object sender, System.EventArgs e)
+    {
+        if (GhostMovement.Instance.IsPlayerControlled())
+        {
+            _animator.SetBool("isAttacking", true);
+            Invoke(nameof(AttackingStop), 0.5f);
+        }
+    }
+
+    private void GameInput_OnSwitchAction(object sender, System.EventArgs e)
+    {
+        enabled = !enabled;
     }
 
     private void GameInput_OnJumpAction(object sender, System.EventArgs e)
@@ -33,17 +47,22 @@ public class PlayerMovement : MonoBehaviour
         Jump();
     }
 
-    void Update()
+    private void Update()
     {
         MoveControls();
-        Attacking();
     }
+
+    private void AttackingStop()
+    {
+        _animator.SetBool("isAttacking", false);
+    }
+
 
     public void MoveControls()
     {
-        Vector2 movement = GameInput.Instance.GetMovementNormalized();
-        
-        transform.position +=  (Vector3)movement * _moveSpeed * Time.deltaTime;
+        Vector2 movement = GameInput.Instance.GetPlayerMovementNormalized();
+
+        transform.position += (Vector3)movement * _moveSpeed * Time.deltaTime;
 
         bool isMoving = !(movement.magnitude == 0);
         _animator.SetBool("isMoving", isMoving);
@@ -75,18 +94,5 @@ public class PlayerMovement : MonoBehaviour
         _isJumping = false;
     }
 
-    public void Attacking()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            _animator.SetBool("isAttacking", true);
-            Invoke("AttackingStop", 0.5f);
-        }
-    }
 
-    public void AttackingStop()
-    {
-        _animator.SetBool("isAttacking", false);
-    }
-       
 }

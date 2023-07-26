@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameInput : MonoBehaviour
@@ -8,6 +6,9 @@ public class GameInput : MonoBehaviour
     public static GameInput Instance { get; private set; }
 
     public event EventHandler OnJumpAction;
+    public event EventHandler OnSwitchAction;
+    public event EventHandler OnPlayerFireAction;
+    public event EventHandler OnGhostFireAction;
 
     private PlayerInputActions _playerInputActions;
 
@@ -25,6 +26,25 @@ public class GameInput : MonoBehaviour
         _playerInputActions.Enable();
 
         _playerInputActions.Player.Jump.performed += Jump_performed;
+        _playerInputActions.Player.Fire.performed += Player_Fire_performed; ;
+
+        _playerInputActions.Ghost.SwitchControl.performed += SwitchControl_performed;
+        _playerInputActions.Ghost.Fire.performed += Ghost_Fire_performed;
+    }
+
+    private void Ghost_Fire_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnGhostFireAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Player_Fire_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnPlayerFireAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void SwitchControl_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnSwitchAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnDestroy()
@@ -39,9 +59,18 @@ public class GameInput : MonoBehaviour
         OnJumpAction?.Invoke(this, EventArgs.Empty);
     }
 
-    public Vector2 GetMovementNormalized()
+    public Vector2 GetPlayerMovementNormalized()
     {
         Vector2 inputVector = _playerInputActions.Player.Move.ReadValue<Vector2>();
+
+        inputVector.Normalize();
+
+        return inputVector;
+    }
+
+    public Vector2 GetGhostMovementNormalized()
+    {
+        Vector2 inputVector = _playerInputActions.Ghost.Move.ReadValue<Vector2>();
 
         inputVector.Normalize();
 

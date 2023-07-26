@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Attacking : MonoBehaviour
@@ -11,16 +9,21 @@ public class Attacking : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Start()
     {
-        if (Input.GetButtonDown("Fire1"))
+        GameInput.Instance.OnGhostFireAction += GameInput_OnGhostFireAction;
+    }
+
+    private void GameInput_OnGhostFireAction(object sender, System.EventArgs e)
+    {
+        if (!GhostMovement.Instance.IsPlayerControlled())
         {
             _animator.SetBool("isAttacking", true);
-            Invoke("StopAttacking", 1f);
+            Invoke(nameof(StopAttacking), 1f);
         }
     }
 
-    public void StopAttacking()
+    private void StopAttacking()
     {
         _animator.SetBool("isAttacking", false);
     }
