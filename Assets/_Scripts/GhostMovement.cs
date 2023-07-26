@@ -13,6 +13,7 @@ public class GhostMovement : MonoBehaviour
 
     private Animator _animator;
     private bool _isPlayerControlled = true;
+    private float _ghostScaleX;
 
     private void Awake()
     {
@@ -30,6 +31,8 @@ public class GhostMovement : MonoBehaviour
     private void Start()
     {
         GameInput.Instance.OnSwitchAction += GameInput_OnSwitchAction;
+
+        _ghostScaleX = transform.localScale.x;
     }
 
     private void GameInput_OnSwitchAction(object sender, System.EventArgs e)
@@ -57,6 +60,15 @@ public class GhostMovement : MonoBehaviour
             {
                 _animator.SetBool("isMoving", false);
             }
+
+            if ((target.position - transform.position).x > 0)
+            {
+                transform.localScale = new Vector3(_ghostScaleX, transform.localScale.y, transform.localScale.z);
+            }
+            else if ((target.position - transform.position).x < 0)
+            {
+                transform.localScale = new Vector3(-_ghostScaleX, transform.localScale.y, transform.localScale.z);
+            }
         }
         else
         {
@@ -65,7 +77,18 @@ public class GhostMovement : MonoBehaviour
 
             bool isMoving = !(movement.magnitude == 0);
             _animator.SetBool("isMoving", isMoving);
+
+            if (movement.x > 0)
+            {
+                transform.localScale = new Vector3(_ghostScaleX, transform.localScale.y, transform.localScale.z);
+            }
+            else if (movement.x < 0)
+            {
+                transform.localScale = new Vector3(-_ghostScaleX, transform.localScale.y, transform.localScale.z);
+            }
         }
+
+
     }
 
     public bool IsPlayerControlled()

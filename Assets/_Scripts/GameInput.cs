@@ -9,6 +9,7 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnSwitchAction;
     public event EventHandler OnPlayerFireAction;
     public event EventHandler OnGhostFireAction;
+    public event EventHandler OnGamePaused;
 
     private PlayerInputActions _playerInputActions;
 
@@ -26,10 +27,16 @@ public class GameInput : MonoBehaviour
         _playerInputActions.Enable();
 
         _playerInputActions.Player.Jump.performed += Jump_performed;
-        _playerInputActions.Player.Fire.performed += Player_Fire_performed; ;
+        _playerInputActions.Player.Fire.performed += Player_Fire_performed;
+        _playerInputActions.Player.Pause.performed += Pause_performed;
 
         _playerInputActions.Ghost.SwitchControl.performed += SwitchControl_performed;
         _playerInputActions.Ghost.Fire.performed += Ghost_Fire_performed;
+    }
+
+    private void Pause_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnGamePaused?.Invoke(this, EventArgs.Empty);
     }
 
     private void Ghost_Fire_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)

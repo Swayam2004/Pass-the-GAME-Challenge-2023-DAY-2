@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private bool _isGrounded;
     private bool _isJumping;
     private float _jumpTimeCounter;
+    private float _playerScaleX;
 
     private void Awake()
     {
@@ -25,7 +26,9 @@ public class PlayerMovement : MonoBehaviour
     {
         GameInput.Instance.OnJumpAction += GameInput_OnJumpAction;
         GameInput.Instance.OnSwitchAction += GameInput_OnSwitchAction;
-        GameInput.Instance.OnPlayerFireAction += GameInput_OnPlayerFireAction; ;
+        GameInput.Instance.OnPlayerFireAction += GameInput_OnPlayerFireAction;
+
+        _playerScaleX = transform.localScale.x;
     }
 
     private void GameInput_OnPlayerFireAction(object sender, System.EventArgs e)
@@ -66,6 +69,15 @@ public class PlayerMovement : MonoBehaviour
 
         bool isMoving = !(movement.magnitude == 0);
         _animator.SetBool("isMoving", isMoving);
+
+        if(movement.x > 0)
+        {
+            transform.localScale = new Vector3(_playerScaleX, transform.localScale.y, transform.localScale.z);
+        }
+        else if(movement.x < 0)
+        {
+            transform.localScale = new Vector3(-_playerScaleX, transform.localScale.y, transform.localScale.z);
+        }
     }
     public void Jump()
     {
